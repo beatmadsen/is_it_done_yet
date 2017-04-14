@@ -40,7 +40,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "sinatra", "~> 1.4"
   spec.add_dependency "thin", "~> 1.7"
   spec.add_dependency "rack-contrib", "~> 1.4"
-  spec.add_dependency "rack-token_auth"
+  spec.add_dependency "rack-token_auth", "~> 0.1"
+  spec.add_dependency "json", "~> 2"
 
   # Development
   spec.add_development_dependency "bundler", "~> 1.14"
