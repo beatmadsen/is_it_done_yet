@@ -3,10 +3,7 @@ require 'sinatra'
 require 'concurrent'
 require 'json'
 
-
 module IsItDoneYet
-
-
   class WebApp < ::Sinatra::Base
     UNKNOWN_NODE = { errors: ['Unknown Node'] }.to_json
     NO_BUILD_STATE = { errors: ['You forgot build state'] }.to_json
@@ -48,6 +45,13 @@ module IsItDoneYet
       settings.state[k] = build_state
 
       200
+    end
+  end
+
+  def self.build_app
+    Rack::Builder.app do
+      use Rack::PostBodyContentTypeParser
+      run WebApp
     end
   end
 end
