@@ -2,11 +2,13 @@ require 'is_it_done_yet/version'
 require 'sinatra'
 require 'concurrent'
 require 'json'
+require 'time'
 
 module IsItDoneYet
   class WebApp < ::Sinatra::Base
     UNKNOWN_NODE = { errors: ['Unknown Node'] }.to_json
     NO_BUILD_STATE = { errors: ['You forgot build state'] }.to_json
+    TTL_SECONDS = 24 * 60 * 60
 
     configure do
       set :state, ::Concurrent::Map.new
@@ -18,16 +20,36 @@ module IsItDoneYet
       def key(project_id, node_id)
         "#{project_id}|#{node_id}"
       end
+
+      def house_keeping
+        expired_keys = settings.state
+          .each_pair.with_object([]) do |(key, (_b, time)), acc|
+          acc << key if time < Time.now - TTL_SECONDS
+        end
+        expired_keys.each { |key| settings.state.delete(key) }
+      end
+
+      def store(key, value)
+        settings.state[key] = [value, Time.now]
+      end
+
+      def retrieve(key)
+        build_state, _t = settings.state[key]
+        build_state
+      end
     end
 
     before do
+      house_keeping
+
       content_type :json
     end
 
     get '/projects/:project_id/nodes/:node_id' do
       project_id, node_id = params.values_at('project_id', 'node_id')
       k = key(project_id, node_id)
-      build_state = settings.state[k]
+
+      build_state = retrieve(k)
 
       halt 404, UNKNOWN_NODE unless build_state
 
@@ -41,8 +63,7 @@ module IsItDoneYet
 
       project_id, node_id = params.values_at('project_id', 'node_id')
       k = key(project_id, node_id)
-
-      settings.state[k] = build_state
+      store(k, build_state)
 
       200
     end
