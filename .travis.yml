@@ -13,3 +13,5 @@ env:
   matrix:
     - CI_NODE_INDEX=0
     - CI_NODE_INDEX=1
+
+script: bundle exec rake knapsack:rspec
