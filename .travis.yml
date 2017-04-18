@@ -15,4 +15,6 @@ env:
     - CI_NODE_INDEX=1
 
 script: bundle exec rake knapsack:rspec
-script: bin/ci
+
+after_success: bin/ci OK
+after_failure: bin/ci FAILED
