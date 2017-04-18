@@ -45,7 +45,7 @@ module IsItDoneYet
         settings.state
                 .each_pair
                 .select { |(key, _v)| key.start_with?(prefix) }
-                .map { |(key, (build_state, _t))| [key, build_state] }
+                .map { |(key, (build_state, _t))| [key.split('|')[1], build_state] }
                 .to_h
       end
     end
