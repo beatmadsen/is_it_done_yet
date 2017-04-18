@@ -3,6 +3,7 @@ require 'is_it_done_yet'
 require 'rspec'
 require 'rack/test'
 require 'json'
+require 'knapsack'
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods
@@ -14,3 +15,5 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 end
+
+Knapsack::Adapters::RSpecAdapter.bind
