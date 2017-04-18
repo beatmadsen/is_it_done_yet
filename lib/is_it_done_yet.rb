@@ -17,8 +17,8 @@ module IsItDoneYet
     helpers do
       private
 
-      def key(project_id, node_id)
-        "#{project_id}|#{node_id}"
+      def key(build_id, node_id)
+        "#{build_id}|#{node_id}"
       end
 
       def house_keeping
@@ -45,9 +45,9 @@ module IsItDoneYet
       content_type :json
     end
 
-    get '/projects/:project_id/nodes/:node_id' do
-      project_id, node_id = params.values_at('project_id', 'node_id')
-      k = key(project_id, node_id)
+    get '/builds/:build_id/nodes/:node_id' do
+      build_id, node_id = params.values_at('build_id', 'node_id')
+      k = key(build_id, node_id)
 
       build_state = retrieve(k)
 
@@ -57,12 +57,12 @@ module IsItDoneYet
       { build_state: build_state }.to_json
     end
 
-    post '/projects/:project_id/nodes/:node_id' do
+    post '/builds/:build_id/nodes/:node_id' do
       build_state = params['build_state']
       halt 400, NO_BUILD_STATE unless build_state
 
-      project_id, node_id = params.values_at('project_id', 'node_id')
-      k = key(project_id, node_id)
+      build_id, node_id = params.values_at('build_id', 'node_id')
+      k = key(build_id, node_id)
       store(k, build_state)
 
       200
