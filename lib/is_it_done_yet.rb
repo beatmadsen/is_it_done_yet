@@ -3,6 +3,7 @@ require 'sinatra'
 require 'concurrent'
 require 'json'
 require 'time'
+require 'rack/contrib'
 
 module IsItDoneYet
   class WebApp < ::Sinatra::Base
