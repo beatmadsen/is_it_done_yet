@@ -6,7 +6,6 @@ rvm:
 before_install: gem install bundler -v 1.14.6
 bundler_args: --without production
 
-script: "bundle exec rake knapsack:rspec"
 env:
   global:
     - MY_GLOBAL_VAR=123
