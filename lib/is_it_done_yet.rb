@@ -8,6 +8,7 @@ require 'rack/contrib'
 module IsItDoneYet
   class WebApp < ::Sinatra::Base
     UNKNOWN_NODE = { errors: ['Unknown Node'] }.to_json
+    UNKNOWN_BUILD = { errors: ['Unknown Build'] }.to_json
     NO_BUILD_STATE = { errors: ['You forgot build state'] }.to_json
     TTL_SECONDS = 24 * 60 * 60
 
@@ -23,10 +24,11 @@ module IsItDoneYet
       end
 
       def house_keeping
-        expired_keys = settings.state
-          .each_pair.with_object([]) do |(key, (_b, time)), acc|
-          acc << key if time < Time.now - TTL_SECONDS
-        end
+        expired_keys =
+          settings.state.each_pair.with_object([]) do |(key, (_b, time)), acc|
+            acc << key if time < Time.now - TTL_SECONDS
+          end
+
         expired_keys.each { |key| settings.state.delete(key) }
       end
 
@@ -37,6 +39,13 @@ module IsItDoneYet
       def retrieve(key)
         build_state, _t = settings.state[key]
         build_state
+      end
+
+      def retrieve_all(prefix)
+        settings.each_pair
+                .select { |(key, _v)| key.start_with?(prefix) }
+                .map { |(key, (build_state, _t))| [key, build_state] }
+                .to_h
       end
     end
 
@@ -56,6 +65,17 @@ module IsItDoneYet
 
       content_type :json
       { build_state: build_state }.to_json
+    end
+
+    get '/builds/:build_id' do
+      build_id = params['build_id']
+
+      build_states = retrieve_all(build_id)
+
+      halt 404, UNKNOWN_BUILD unless build_states
+
+      content_type :json
+      { build_states: build_states }.to_json
     end
 
     post '/builds/:build_id/nodes/:node_id' do

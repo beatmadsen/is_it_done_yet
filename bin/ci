@@ -16,7 +16,7 @@ args_ok = ARGV[0]
 abort 'Bad env' unless env_ok
 abort 'Bad args' unless args_ok
 
-main_node = ENV['CI_NODE_INDEX'] == 0
+main_node = ENV['CI_NODE_INDEX'] == '0'
 auth_token = "Token token=\"#{ENV['IIDY_TOKEN']}\""
 
 if main_node
