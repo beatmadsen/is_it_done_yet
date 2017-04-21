@@ -1,2 +1,8 @@
-#!/usr/bin/env bash
-echo "Deploying"
+#!/usr/bin/env ruby
+main_node = ENV['CI_NODE_INDEX'] == '0'
+
+if main_node
+  puts 'Main node; Deploying'
+else
+  puts 'Not main node; Not deploying'
+end
