@@ -1,6 +1,10 @@
 # IsItDoneYet
 
-A simple web app that stores key-value pairs.
+A simple web app that stores key-value pairs to aid in coordinating build outcomes of parallel CI build pipelines such as Travis's matrix build feature.
+
+The intended use case is when you want to use one of the build nodes as a master and wait for the results of the slaves before doing some final action.
+
+Specifically I built it to allow a travis job at work to do parallel tests with Knapsack and do a deploy if all tests pass.
 
 ## Installation
 
@@ -20,7 +24,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This library includes a Rack application which you can instantiate by doing `IsItDoneYet.build_app`. In the [example Rack config](examples/config.ru) there's a setup with token-based auth middleware. Include a similar `config.ru` at the root of your application and run `bundle exec rackup` to start the web app locally. If you're running it on a cloud service, follow your service's guidelines on deploying Rack applications.
 
 ## Development
 

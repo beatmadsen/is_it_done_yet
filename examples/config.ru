@@ -1,7 +1,7 @@
 require 'bundler'
 require 'rack/contrib'
 require 'rack/token_auth'
-# require 'is_it_done_yet'
+require 'is_it_done_yet'
 Bundler.require
 
 use Rack::TokenAuth do |token, options, env|
