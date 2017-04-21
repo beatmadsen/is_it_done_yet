@@ -1,0 +1,74 @@
+#!/usr/bin/env ruby
+
+# Script that queries build status of
+# travis nodes from synchronising service
+# and waits for them to terminate
+
+require 'net/http'
+require 'uri'
+require 'json'
+
+OK_STATES = %w(OK GOOD).freeze
+SLEEP_TIME_SECONDS = 30
+
+env_ok = ENV['CI_NODE_INDEX'] &&
+         ENV['CI_NODE_TOTAL'] &&
+         ENV['IIDY_ENDPOINT'] &&
+         ENV['TRAVIS_BUILD_NUMBER'] &&
+         ENV['TRAVIS_JOB_NUMBER'] &&
+         ENV['IIDY_TOKEN']
+
+abort 'Bad env' unless env_ok
+
+main_node = ENV['CI_NODE_INDEX'] == '0'
+auth_token = "Token token=\"#{ENV['IIDY_TOKEN']}\""
+
+if main_node
+  # query progress
+  build_id = "is_it_done_yet--#{ENV['TRAVIS_BUILD_NUMBER']}"
+
+  url = ENV['IIDY_ENDPOINT'] + "/builds/#{build_id}"
+
+  puts "URL: #{url}"
+
+  uri = URI(url)
+
+  request = Net::HTTP::Get.new(uri)
+  request['Authorization'] = auth_token
+
+  expected_size = ENV['CI_NODE_TOTAL'].to_i - 1
+  attempts = 0
+  success = false
+
+  loop do
+    attempts += 1
+    abort 'Failed to fetch results' if attempts > 10
+
+    puts "Attempt no. #{attempts} at fetching build states"
+
+    response = Net::HTTP.start(
+      uri.hostname,
+      uri.port,
+      use_ssl: uri.scheme == 'https'
+    ) { |http| http.request(request) }
+
+    next unless response.code == '200'
+    build_states = JSON.parse(response.body)['build_states']
+
+    if build_states.size < expected_size
+      puts "Some nodes have not reported in yet, \
+        found #{build_states.size}, \
+        expected #{expected_size}, waiting a bit"
+      sleep SLEEP_TIME_SECONDS
+      next
+    end
+
+    success = build_states.all? { |(_k, value)| OK_STATES.include?(value.upcase) }
+    break
+  end
+
+  abort 'Some nodes failed' unless success
+  puts 'Success!'
+else
+  puts 'Not main node!'
+end

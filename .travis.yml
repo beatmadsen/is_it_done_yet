@@ -14,7 +14,7 @@ env:
     - CI_NODE_INDEX=0
     - CI_NODE_INDEX=1
 
-script: bundle exec rake knapsack:rspec
+script: bundle exec rake knapsack:rspec && examples/ci-sync && examples/ci-deploy
 
-after_success: bin/ci OK
-after_failure: bin/ci FAILED
+after_success: examples/ci-post OK
+after_failure: examples/ci-post FAILED

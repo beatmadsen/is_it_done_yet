@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# Script that posts build status of
+# travis nodes (from ARGV[0]) to synchronising service
 require 'net/http'
 require 'uri'
 require 'json'
@@ -20,9 +22,7 @@ main_node = ENV['CI_NODE_INDEX'] == '0'
 auth_token = "Token token=\"#{ENV['IIDY_TOKEN']}\""
 
 if main_node
-  # query for other nodes' progress
   puts 'Main node!'
-
 else
   # publish progress
   build_id = "is_it_done_yet--#{ENV['TRAVIS_BUILD_NUMBER']}"
@@ -39,7 +39,6 @@ else
   request['Authorization'] = auth_token
   request.body = { build_state: ARGV[0] }.to_json
   request.content_type = 'application/json'
-
 
   response = Net::HTTP.start(
     uri.hostname,
