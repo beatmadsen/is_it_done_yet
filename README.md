@@ -26,6 +26,14 @@ Or install it yourself as:
 
 This library includes a Rack application which you can instantiate by doing `IsItDoneYet.build_app`. In the [example Rack config](examples/config.ru) there's a setup with token-based auth middleware. Include a similar `config.ru` at the root of your application and run `bundle exec rackup` to start the web app locally. If you're running it on a cloud service, follow your service's guidelines on deploying Rack applications.
 
+The web app provides three endpoints:
+* `POST /builds/:build_id/nodes/:node_id`
+    - example request body: `{ "build_state" : "ok" }`
+* `GET /builds/:build_id`
+    - example response body: `{ "build_states": { "51": "bad", "52": "ok" } }`
+* `GET /builds/:build_id/nodes/:node_id`
+    - example response body: `{ "build_state": "ok" }`
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
