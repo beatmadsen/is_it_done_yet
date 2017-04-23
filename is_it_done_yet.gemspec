@@ -9,20 +9,16 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Erik Madsen']
   spec.email         = ['beatmadsen@gmail.com']
 
-  spec.summary       = 'Tracks status of Travis matrix build nodes'
-  spec.description   = '
-    In case you need to carry out build steps
-      in one of the nodes after the other nodes finish, e.g. deploying,
-      then you need a way of ascertaining the status of the other nodes.
-      This is what is_it_done_yet is for.
-  '
+  spec.summary       = 'Tracks statuses of CI build nodes'
+  spec.description   = 'In case you need to carry out build steps in one of the nodes of your CI project after the other nodes finish, e.g. deploying, then you need a way of ascertaining the status of the other nodes. This is what is_it_done_yet is for.'
   spec.homepage      = 'http://www.github.com/beatmadsen/is_it_done_yet'
   spec.license       = 'MIT'
+  spec.required_ruby_version = '>= 2.0'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "https://rubygems.org"
+    spec.metadata['allowed_push_host'] = 'https://rubygems.org'
   else
     raise 'RubyGems 2.0 or newer is required to protect against ' \
       'public gem pushes.'

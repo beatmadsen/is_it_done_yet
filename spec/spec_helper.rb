@@ -17,3 +17,7 @@ RSpec.configure do |config|
 end
 
 Knapsack::Adapters::RSpecAdapter.bind
+
+def parse(json_text)
+  JSON.parse(json_text)
+end

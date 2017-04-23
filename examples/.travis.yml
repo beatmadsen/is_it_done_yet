@@ -1,0 +1,20 @@
+sudo: false
+language: ruby
+cache: bundler
+rvm:
+  - 2.4.1
+before_install: gem install bundler -v 1.14.6
+bundler_args: --without production
+
+env:
+  global:
+    - MY_GLOBAL_VAR=123
+    - CI_NODE_TOTAL=2
+  matrix:
+    - CI_NODE_INDEX=0
+    - CI_NODE_INDEX=1
+
+script: bundle exec rake knapsack:rspec && examples/ci-sync && examples/ci-deploy
+
+after_success: examples/ci-post OK
+after_failure: examples/ci-post FAILED

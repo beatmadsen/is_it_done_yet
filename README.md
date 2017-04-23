@@ -6,6 +6,8 @@ The intended use case is when you want to use one of the build nodes as a master
 
 Specifically I built it to allow a travis job at work to do parallel tests with Knapsack and do a deploy if all tests pass.
 
+An example Travis build configuration that takes advantage of a deployed `is_it_done_yet` service is available in [examples](exampels/.travis.yml).
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -33,6 +35,8 @@ The web app provides three endpoints:
     - example response body: `{ "build_states": { "51": "bad", "52": "ok" } }`
 * `GET /builds/:build_id/nodes/:node_id`
     - example response body: `{ "build_state": "ok" }`
+
+The app keeps the build states in memory. This means that values will be lost after a restart of the service. Further, load balancing across multiple instances will only work if routing to the individual instance is consistent for the same `:build_id` path parameter, but scaling beyond one app instance is not currently a known use case.
 
 ## Development
 

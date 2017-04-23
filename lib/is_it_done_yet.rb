@@ -20,7 +20,7 @@ module IsItDoneYet
       private
 
       def key(build_id, node_id)
-        "#{build_id}|#{node_id}"
+        [build_id, node_id].freeze
       end
 
       def house_keeping
@@ -41,11 +41,11 @@ module IsItDoneYet
         build_state
       end
 
-      def retrieve_all(prefix)
+      def retrieve_all(build_id)
         settings.state
                 .each_pair
-                .select { |(key, _v)| key.start_with?(prefix) }
-                .map { |(key, (build_state, _t))| [key.split('|')[1], build_state] }
+                .select { |((b, _n), _v)| build_id == b }
+                .map { |((_b, node_id), (build_state, _t))| [node_id, build_state] }
                 .to_h
       end
     end
@@ -73,7 +73,7 @@ module IsItDoneYet
 
       build_states = retrieve_all(build_id)
 
-      halt 404, UNKNOWN_BUILD unless build_states
+      halt 404, UNKNOWN_BUILD if build_states.to_a.empty?
 
       content_type :json
       { build_states: build_states }.to_json
