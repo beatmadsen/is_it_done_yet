@@ -10,10 +10,8 @@ use Rack::TokenAuth do |token, _options, _env|
 end
 
 # Heartbeat endpoint
-use Rack::Builder.new do
-  map '/health_check' do
-    run ->(_env) { "success" }
-  end
+map '/health_check' do
+  run ->(_env) { [200, { "Content-Type" => "text/plain" }, ["success"]] }
 end
 
 run IsItDoneYet.build_app
