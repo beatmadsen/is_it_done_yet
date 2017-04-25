@@ -46,5 +46,5 @@ else
     use_ssl: uri.scheme == 'https'
   ) { |http| http.request(request) }
 
-  abort "Failed to post build status: #{response.code}" unless response.code == '200'
+  abort "Failed to post build status: #{response.code}" unless response.code == '201'
 end
