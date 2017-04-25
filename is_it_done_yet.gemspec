@@ -1,4 +1,5 @@
 # coding: utf-8
+
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'is_it_done_yet/version'
@@ -46,4 +47,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rack-test', '~> 0.6'
   spec.add_development_dependency 'knapsack', '~> 1.13'
+  spec.add_development_dependency 'byebug', '~> 9'
 end

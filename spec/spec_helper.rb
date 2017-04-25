@@ -4,6 +4,7 @@ require 'rspec'
 require 'rack/test'
 require 'json'
 require 'knapsack'
+require 'byebug'
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods

@@ -26,8 +26,8 @@ RSpec.describe 'IsItDoneYet API' do
     context 'with simple existing data' do
       let(:ok_payload) { { build_state: 'ok' } }
       let(:bad_payload) { { build_state: 'bad' } }
-      let(:ok_nodes) { %w(a 56) }
-      let(:bad_nodes) { %w(haha 57) }
+      let(:ok_nodes) { %w[a 56] }
+      let(:bad_nodes) { %w[haha 57] }
 
       before do
         ok_nodes.each do |node_id|

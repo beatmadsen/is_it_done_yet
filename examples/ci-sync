@@ -8,7 +8,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-OK_STATES = %w(OK GOOD).freeze
+OK_STATES = %w[OK GOOD].freeze
 SLEEP_TIME_SECONDS = 30
 
 env_ok = ENV['CI_NODE_INDEX'] &&
@@ -57,8 +57,8 @@ if main_node
 
     if build_states.size < expected_size
       puts "Some nodes have not reported in yet, \
-        found #{build_states.size}, \
-        expected #{expected_size}, waiting a bit"
+      found #{build_states.size}, \
+      expected #{expected_size}, waiting a bit"
       sleep SLEEP_TIME_SECONDS
       next
     end
