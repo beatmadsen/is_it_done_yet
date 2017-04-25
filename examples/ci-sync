@@ -52,7 +52,11 @@ if main_node
       use_ssl: uri.scheme == 'https'
     ) { |http| http.request(request) }
 
-    next unless response.code == '200'
+    unless response.code == '200'
+      sleep SLEEP_TIME_SECONDS
+      next
+    end
+
     build_states = JSON.parse(response.body)['build_states']
 
     if build_states.size < expected_size
