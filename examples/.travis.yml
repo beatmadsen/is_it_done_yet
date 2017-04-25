@@ -3,12 +3,15 @@ language: ruby
 cache: bundler
 rvm:
   - 2.4.1
-before_install: gem install bundler -v 1.14.6
+  
+before_install:
+  - gem install bundler -v 1.14.6
+  - examples/ci-clear
+
 bundler_args: --without production
 
 env:
   global:
-    - MY_GLOBAL_VAR=123
     - CI_NODE_TOTAL=2
   matrix:
     - CI_NODE_INDEX=0

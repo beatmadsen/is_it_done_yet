@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+
+# Script that clears build status of
+# travis nodes from synchronising service
+
+require 'net/http'
+require 'uri'
+require 'json'
+
+SLEEP_TIME_SECONDS = 30
+
+env_ok = ENV['CI_NODE_INDEX'] &&
+         ENV['CI_NODE_TOTAL'] &&
+         ENV['IIDY_ENDPOINT'] &&
+         ENV['TRAVIS_BUILD_NUMBER'] &&
+         ENV['TRAVIS_JOB_NUMBER'] &&
+         ENV['IIDY_TOKEN']
+
+abort 'Bad env' unless env_ok
+
+main_node = ENV['CI_NODE_INDEX'] == '0'
+auth_token = "Token token=\"#{ENV['IIDY_TOKEN']}\""
+
+if main_node
+  # query progress
+  build_id = "is_it_done_yet--#{ENV['TRAVIS_BUILD_NUMBER']}"
+
+  url = ENV['IIDY_ENDPOINT'] + "/builds/#{build_id}"
+
+  puts "URL: #{url}"
+
+  uri = URI(url)
+
+  request = Net::HTTP::Delete.new(uri)
+  request['Authorization'] = auth_token
+  attempts = 0
+
+  loop do
+    attempts += 1
+    abort 'Failed to clear results' if attempts > 10
+
+    puts "Attempt no. #{attempts} at clearing build states"
+
+    response = Net::HTTP.start(
+      uri.hostname,
+      uri.port,
+      use_ssl: uri.scheme == 'https'
+    ) { |http| http.request(request) }
+
+    break if response.code == '204'
+  end
+  puts 'Success!'
+else
+  puts 'Not main node!'
+end
