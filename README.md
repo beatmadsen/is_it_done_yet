@@ -28,13 +28,14 @@ Or install it yourself as:
 
 This library includes a Rack application which you can instantiate by doing `IsItDoneYet.build_app`. In the [example Rack config](examples/config.ru) there's a setup with token-based auth middleware. Include a similar `config.ru` at the root of your application and run `bundle exec rackup` to start the web app locally. If you're running it on a cloud service, follow your service's guidelines on deploying Rack applications.
 
-The web app provides three endpoints:
+The web app provides four endpoints:
 * `POST /builds/:build_id/nodes/:node_id`
     - example request body: `{ "build_state" : "ok" }`
 * `GET /builds/:build_id`
     - example response body: `{ "build_states": { "51": "bad", "52": "ok" } }`
 * `GET /builds/:build_id/nodes/:node_id`
     - example response body: `{ "build_state": "ok" }`
+* `DELETE /builds/:build_id` to clear state for a build
 
 The app keeps the build states in memory. This means that values will be lost after a restart of the service. Further, load balancing across multiple instances will only work if routing to the individual instance is consistent for the same `:build_id` path parameter, but scaling beyond one app instance is not currently a known use case.
 
