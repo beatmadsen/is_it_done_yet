@@ -74,6 +74,10 @@ if main_node
     rebuilding = build_states.any?{ |(_k, value)| REBUILDING_STATE == value.upcase  }
     building = build_states.any?{ |(_k, value)| BUILDING_STATE == value.upcase  }
     if rebuilding || building
+<<<<<<< HEAD
+=======
+      puts 'Nodes are building or rebuilding'
+>>>>>>> c03a730... EM: Put support, need docs, examples update
       sleep SLEEP_TIME_SECONDS
       next
     end
