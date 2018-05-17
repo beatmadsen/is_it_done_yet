@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Script that puts build and rebuild status of
+# travis nodes (from ARGV[0] and ARGV[1]) to synchronising service
+require 'net/http'
+require 'uri'
+require 'json'
+
+env_ok = ENV['CI_NODE_INDEX'] &&
+         ENV['CI_NODE_TOTAL'] &&
+         ENV['IIDY_ENDPOINT'] &&
+         ENV['TRAVIS_BUILD_NUMBER'] &&
+         ENV['TRAVIS_JOB_NUMBER'] &&
+         ENV['IIDY_TOKEN']
+
+args_ok = ARGV[0] && ARGV[1]
+
+abort 'Bad env' unless env_ok
+abort 'Bad args' unless args_ok
+
+main_node = ENV['CI_NODE_INDEX'] == '0'
+auth_token = "Token token=\"#{ENV['IIDY_TOKEN']}\""
+
+if main_node
+  puts 'Main node!'
+else
+  # publish progress
+  build_id = "is_it_done_yet--#{ENV['TRAVIS_BUILD_NUMBER']}"
+  node_id = ENV['TRAVIS_JOB_NUMBER']
+
+  url = ENV['IIDY_ENDPOINT'] +
+        "/builds/#{build_id}/nodes/#{node_id}"
+
+  puts "URL: #{url}"
+
+  uri = URI(url)
+
+  request = Net::HTTP::Put.new(uri)
+  request['Authorization'] = auth_token
+  request.body = {
+    build_state: ARGV[0],
+    build_state_on_overwrite: ARV[1]
+  }.to_json
+  request.content_type = 'application/json'
+
+  response = Net::HTTP.start(
+    uri.hostname,
+    uri.port,
+    use_ssl: uri.scheme == 'https'
+  ) { |http| http.request(request) }
+
+  abort "Failed to put build status: #{response.code}" unless response.code == '204'
+end
