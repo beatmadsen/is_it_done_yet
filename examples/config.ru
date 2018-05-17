@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler'
 require 'rack/contrib'
 require 'rack/token_auth'
