@@ -28,9 +28,11 @@ Or install it yourself as:
 
 This library includes a Rack application which you can instantiate by doing `IsItDoneYet.build_app`. In the [example Rack config](examples/config.ru) there's a setup with token-based auth middleware. Include a similar `config.ru` at the root of your application and run `bundle exec rackup` to start the web app locally. If you're running it on a cloud service, follow your service's guidelines on deploying Rack applications.
 
-The web app provides four endpoints:
-* `POST /builds/:build_id/nodes/:node_id`
+The web app provides five endpoints:
+* `POST /builds/:build_id/nodes/:node_id` to write value for node, failing to overwrite.
     - example request body: `{ "build_state" : "ok" }`
+* `PUT /builds/:build_id/nodes/:node_id` to write or overwrite value for node.
+    - example request body: `{ "build_state" : "building", "build_state_on_overwrite" : "rebuilding" }`
 * `GET /builds/:build_id`
     - example response body: `{ "build_states": { "51": "bad", "52": "ok" } }`
 * `GET /builds/:build_id/nodes/:node_id`

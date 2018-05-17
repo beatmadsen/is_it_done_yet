@@ -1,3 +1,9 @@
+# 0.4.0
+
+Features:
+
+* Introduced `PUT /builds/:build_id/nodes/:node_id` which enables CI scripts that update node values for instance when rebuilding.
+
 # 0.3.0
 
 Features:
