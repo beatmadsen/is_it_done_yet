@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'is_it_done_yet/version'
 require 'sinatra'
 require 'concurrent'
@@ -35,6 +37,12 @@ module IsItDoneYet
 
       def store(key, value)
         settings.state[key] = [value, Time.now]
+      end
+
+      def merge(key:, value_if_absent:, value_if_present:)
+        settings.state.merge_pair(key, [value_if_absent, Time.now]) do
+          [value_if_present, Time.now]
+        end
       end
 
       def retrieve(key)
@@ -103,6 +111,29 @@ module IsItDoneYet
       store(k, build_state)
 
       201
+    end
+
+    # Example:
+    # PUT /builds/42/nodes/13?build_state=BUILDING&build_state_on_overwrite=REBUILDING
+    put '/builds/:build_id/nodes/:node_id' do
+      build_state, build_state_on_overwrite =
+        params.values_at('build_state', 'build_state_on_overwrite')
+      halt 400, NO_BUILD_STATE unless build_state
+
+      build_id, node_id = params.values_at('build_id', 'node_id')
+      k = key(build_id, node_id)
+
+      if build_state_on_overwrite
+        merge(
+          key: k,
+          value_if_absent: build_state,
+          value_if_present: build_state_on_overwrite
+        )
+      else
+        store(k, build_state)
+      end
+
+      204
     end
   end
 end

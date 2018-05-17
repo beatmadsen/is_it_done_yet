@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 main_node = ENV['CI_NODE_INDEX'] == '0'
 
 if main_node

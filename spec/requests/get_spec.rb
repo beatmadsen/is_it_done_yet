@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
-require 'uri'
+require 'erb'
 
 RSpec.describe 'IsItDoneYet API' do
   include Rack::Test::Methods
@@ -42,8 +44,8 @@ RSpec.describe 'IsItDoneYet API' do
       end
 
       context 'with ids using url-escaped characters' do
-        let(:build_id) { URI.escape('bosso|elmo|d') }
-        let(:node_id) { URI.escape('bosso   elmo\d') }
+        let(:build_id) { ERB::Util.url_encode('bosso|elmo|d') }
+        let(:node_id) { ERB::Util.url_encode('bosso   elmo_d') }
 
         it 'should find the status' do
           get path

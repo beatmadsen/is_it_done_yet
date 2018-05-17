@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # Script that posts build status of
 # travis nodes (from ARGV[0]) to synchronising service
