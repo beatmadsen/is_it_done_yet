@@ -4,9 +4,6 @@ cache: bundler
 rvm:
   - 2.6.2
 
-before_install:
-  - examples/ci-clear
-
 bundler_args: --without production
 
 env:

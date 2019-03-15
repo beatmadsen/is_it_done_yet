@@ -14,7 +14,7 @@ env_ok = ENV['CI_NODE_INDEX'] &&
          ENV['TRAVIS_JOB_NUMBER'] &&
          ENV['IIDY_TOKEN']
 
-args_ok = ARGV[0] && ARGV[1]
+args_ok = !ARGV[0].nil?
 
 abort 'Bad env' unless env_ok
 abort 'Bad args' unless args_ok
@@ -40,13 +40,8 @@ else
   request['Authorization'] = auth_token
   request.body = {
     build_state: ARGV[0],
-<<<<<<< HEAD
-    build_state_on_overwrite: ARV[1]
-  }.to_json
-=======
     build_state_on_overwrite: ARGV[1]
   }.compact.to_json
->>>>>>> c03a730... EM: Put support, need docs, examples update
   request.content_type = 'application/json'
 
   response = Net::HTTP.start(
