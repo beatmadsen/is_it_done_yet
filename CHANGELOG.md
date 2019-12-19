@@ -1,3 +1,12 @@
+# 0.6.0
+
+Bumping dependencies
+
+# 0.5.0
+
+Bumping dependencies
+
+
 # 0.4.0
 
 Features:
