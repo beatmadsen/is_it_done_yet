@@ -1,3 +1,23 @@
+# 0.7.0
+
+Runs on current Ruby.
+
+* Sinatra moves from 2.x to 4.x and Rack from 2.x to 3.x. Sinatra 2 requires
+  ostruct, which left the standard library, so the gem could not even be loaded
+  on Ruby 4.
+* JSON request bodies, which the README documents as the way to use this API,
+  returned 500 on Ruby 4. rack-contrib parses them by calling JSON.parse with
+  create_additions, a keyword json 3 removed, and Ruby 4 ships json 3. The app
+  now supplies its own parser to the middleware.
+* thin and rack-token_auth are no longer dependencies. The README always said
+  the deployer brings their own server and auth middleware, and the library
+  never required either.
+* Requires Ruby 3.2 or newer.
+* The published gem no longer carries the Rakefile, Gemfile, CI config or
+  development scripts.
+* The example config.ru returned a bare string where Rack needs a status,
+  headers and body, and used `use` where it needed `map`.
+
 # 0.6.0
 
 Bumping dependencies

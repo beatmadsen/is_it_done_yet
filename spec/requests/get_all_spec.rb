@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'erb'
 require 'uri'
 
 RSpec.describe 'IsItDoneYet API' do
@@ -63,7 +64,7 @@ RSpec.describe 'IsItDoneYet API' do
       let(:payload) { { build_state: 'ok' } }
 
       let(:nodes) { ['a', 'a||s,+a  d', "\ndd\t"] }
-      let(:nodes_esc) { nodes.map { |n| URI.escape(n) } }
+      let(:nodes_esc) { nodes.map { |n| ERB::Util.url_encode(n) } }
       before do
         nodes_esc.each do |node_id|
           node_path = "#{path}/nodes/#{node_id}"

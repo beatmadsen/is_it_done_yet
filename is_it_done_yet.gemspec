@@ -14,32 +14,37 @@ Gem::Specification.new do |spec|
   spec.description   = 'In case you need to carry out build steps in one of the nodes of your CI project after the other nodes finish, e.g. deploying, then you need a way of ascertaining the status of the other nodes. This is what is_it_done_yet is for.'
   spec.homepage      = 'http://www.github.com/beatmadsen/is_it_done_yet'
   spec.license       = 'MIT'
-  spec.required_ruby_version = '>= 2.0'
+  spec.required_ruby_version = '>= 3.2'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = 'https://rubygems.org'
-  else
-    raise 'RubyGems 2.0 or newer is required to protect against ' \
-      'public gem pushes.'
-  end
+  spec.metadata['allowed_push_host'] = 'https://rubygems.org'
+  spec.metadata['source_code_uri'] = spec.homepage
+  spec.metadata['changelog_uri'] = "#{spec.homepage}/blob/master/CHANGELOG.md"
+  spec.metadata['bug_tracker_uri'] = "#{spec.homepage}/issues"
+  spec.metadata['rubygems_mfa_required'] = 'true'
 
-  spec.files = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/}) ||
-      f.match(/knapsack/) ||
-      f.match(/travis/)
+  # The library, its documents and the deployment examples the README points at.
+  # Uses IO.popen with a chdir argument rather than Dir.chdir, which is
+  # process-wide and cannot be nested.
+  not_packaged_prefixes = %w[bin/ test/ spec/ features/ .].freeze
+  not_packaged = /\A(Gemfile|Gemfile\.lock|Rakefile|config\.ru|CODE_OF_CONDUCT\.md)\z/
+
+  gemspec_name = File.basename(__FILE__)
+  spec.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
+    ls.readlines("\x0", chomp: true).reject do |f|
+      (f == gemspec_name) || f.start_with?(*not_packaged_prefixes) ||
+        f.match?(not_packaged) || f.match?(/knapsack/)
+    end
   end
-  spec.bindir        = 'bin'
   spec.require_paths = ['lib']
 
   # Always
-  spec.add_dependency 'concurrent-ruby'
-  spec.add_dependency 'json'
-  spec.add_dependency 'rack-contrib'
-  spec.add_dependency 'rack-token_auth'
-  spec.add_dependency 'sinatra', '~> 2.0'
-  spec.add_dependency 'thin'
+  spec.add_dependency 'concurrent-ruby', '~> 1.3'
+  spec.add_dependency 'json', '>= 2.0'
+  spec.add_dependency 'rack', '~> 3.0'
+  spec.add_dependency 'rack-contrib', '~> 2.5'
+  spec.add_dependency 'sinatra', '~> 4.0'
 
   # Development
   spec.add_development_dependency 'bundler'

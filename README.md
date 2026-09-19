@@ -6,7 +6,7 @@ The intended use case is when you want to use one of the build nodes as a master
 
 Specifically I built it to allow a travis job at work to do parallel tests with Knapsack and do a deploy if all tests pass.
 
-An example Travis build configuration that takes advantage of a deployed `is_it_done_yet` service is available in [examples](exampels/.travis.yml).
+An example Travis build configuration that takes advantage of a deployed `is_it_done_yet` service is available in [examples](examples/.travis.yml).
 
 ## Installation
 
